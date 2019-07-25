@@ -52,14 +52,19 @@ class CalculatorServiceImplSpec extends Specification {
       14 == calc.calculate(inputs)
   }
 
-  def "Try a unary operation"() {
+  @Unroll
+  def "Try a #op unary operation on #a"() {
     given: "A set of inputs"
       def inputs = [
-          new CalculatorInput.Value(9),
-          new CalculatorInput.Operator("SQRT")
+          new CalculatorInput.Value(a),
+          new CalculatorInput.Operator(op)
       ]
     expect:
-      3 == calc.calculate(inputs)
+      b == calc.calculate(inputs)
+    where:
+      a | op     || b
+      9 | "SQRT" || 3
+      9 | "SQ"   || 81
   }
 
   @Unroll

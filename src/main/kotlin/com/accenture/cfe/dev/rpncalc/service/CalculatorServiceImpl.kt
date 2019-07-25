@@ -17,7 +17,7 @@ class CalculatorServiceImpl() : CalculatorService {
         is CalculatorInput.Operator -> executeOp(it.op)
       }
     }
-    return if(stack.count() == 1) {
+    return if (stack.count() == 1) {
       stack.pop() ?: throw IllegalStateException("This shouldn't be happening")
     } else {
       throw IllegalArgumentException("Invalid inputs!")
@@ -30,12 +30,13 @@ class CalculatorServiceImpl() : CalculatorService {
       "-" -> applyOperation { a, b -> a - b }
       "*" -> applyOperation { a, b -> a * b }
       "/" -> applyOperation { a, b -> a / b }
-      "SQRT" -> applyOperation{ a -> BigDecimal(sqrt(a.toDouble()).toString()) }
+      "SQRT" -> applyOperation { a -> BigDecimal(sqrt(a.toDouble()).toString()) }
+      "SQ" -> applyOperation { a -> a * a }
       else -> throw IllegalArgumentException("Unknown operation")
     }
   }
 
-  private fun applyOperation( operation: (BigDecimal) -> BigDecimal) {
+  private fun applyOperation(operation: (BigDecimal) -> BigDecimal) {
     val operand = getOperand()
     val result = operation(operand)
     stack.push(result.toDouble())
