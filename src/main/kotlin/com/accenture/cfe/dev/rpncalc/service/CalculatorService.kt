@@ -1,6 +1,7 @@
 package com.accenture.cfe.dev.rpncalc.service
 
+import com.accenture.cfe.dev.rpncalc.entity.CalculatorInput
+
 interface CalculatorService {
-  fun inputNumber(number: Number)
-  fun calculateOperation(operation: String): Number
+  fun calculate(inputs:List<CalculatorInput>): Number
 }
