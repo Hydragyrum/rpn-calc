@@ -11,6 +11,7 @@ class CalculatorServiceImpl() : CalculatorService {
   private val stack: Stack<Number> = StackImpl<Number>()
 
   override fun calculate(inputs: List<CalculatorInput>): Number {
+    stack.clear()
     inputs.forEach {
       when (it) {
         is CalculatorInput.Value -> stack.push(it.number)

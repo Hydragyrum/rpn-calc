@@ -20,6 +20,8 @@ class StackImpl<T> : Stack<T> {
   }
 
   override fun peek(): T? = internalList.lastOrNull()
+
+  override fun clear() = internalList.clear()
 }
 
 fun <T> Stack<T>.push(items: Collection<T>) = items.forEach { push(it) }

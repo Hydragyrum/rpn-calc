@@ -6,4 +6,5 @@ interface Stack<T> {
   fun push(item: T)
   fun pop(): T?
   fun peek(): T?
+  fun clear()
 }
