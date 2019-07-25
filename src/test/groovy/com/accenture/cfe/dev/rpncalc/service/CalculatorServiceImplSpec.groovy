@@ -5,13 +5,16 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 class CalculatorServiceImplSpec extends Specification {
-  def CalculatorService = new CalculatorServiceImpl()
+
+  CalculatorService calc
+
+  def setup() {
+    calc = new CalculatorServiceImpl()
+  }
 
   @Unroll
   def "A single number #num returns #num"() {
-    given: "A Calculator"
-      def calc = new CalculatorServiceImpl()
-    and: "A set of inputs"
+    given: "A set of inputs"
       def inputs = [new CalculatorInput.Value(num)]
     expect:
       num == calc.calculate(inputs)
@@ -21,9 +24,7 @@ class CalculatorServiceImplSpec extends Specification {
 
   @Unroll
   def "A simple #op operation between #a and #b yields #c"() {
-    given: "A calculator"
-      def calc = new CalculatorServiceImpl()
-    and: "A set of inputs"
+    given: "A set of inputs"
       def inputs = [new CalculatorInput.Value(a), new CalculatorInput.Value(b), new CalculatorInput.Operator(op)]
     expect:
       c == calc.calculate(inputs)
@@ -39,9 +40,7 @@ class CalculatorServiceImplSpec extends Specification {
   }
 
   def "A more complicated operation"() {
-    given: "A calculator"
-      def calc = new CalculatorServiceImpl()
-    and: "A set of inputs"
+    given: "A set of inputs"
       def inputs = [
           new CalculatorInput.Value(2),
           new CalculatorInput.Value(3),
@@ -51,5 +50,38 @@ class CalculatorServiceImplSpec extends Specification {
       ]
     expect:
       14 == calc.calculate(inputs)
+  }
+
+  def "Try a unary operation"() {
+    given: "A set of inputs"
+      def inputs = [
+          new CalculatorInput.Value(9),
+          new CalculatorInput.Operator("SQRT")
+      ]
+    expect:
+      3 == calc.calculate(inputs)
+  }
+
+  @Unroll
+  def "Try invalid inputs"() {
+    when:
+      def result = calc.calculate(inputs)
+    then:
+      thrown(IllegalArgumentException)
+    where:
+      inputs << [
+          [],
+          [
+              new CalculatorInput.Value(2),
+              new CalculatorInput.Value(3)
+          ],
+          [
+              new CalculatorInput.Operator("+")
+          ],
+          [
+              new CalculatorInput.Value(2),
+              new CalculatorInput.Operator("!@")
+          ]
+      ]
   }
 }

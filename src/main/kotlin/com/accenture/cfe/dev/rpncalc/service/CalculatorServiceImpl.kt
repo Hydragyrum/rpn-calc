@@ -4,6 +4,7 @@ import com.accenture.cfe.dev.rpncalc.entity.CalculatorInput
 import com.accenture.cfe.dev.rpncalc.utils.Stack
 import com.accenture.cfe.dev.rpncalc.utils.StackImpl
 import java.math.BigDecimal
+import kotlin.math.sqrt
 
 class CalculatorServiceImpl() : CalculatorService {
 
@@ -16,7 +17,11 @@ class CalculatorServiceImpl() : CalculatorService {
         is CalculatorInput.Operator -> executeOp(it.op)
       }
     }
-    return stack.pop() ?: TODO("Error when nothing on stack");
+    return if(stack.count() == 1) {
+      stack.pop() ?: throw IllegalStateException("This shouldn't be happening")
+    } else {
+      throw IllegalArgumentException("Invalid inputs!")
+    };
   }
 
   private fun executeOp(op: String) {
@@ -25,7 +30,15 @@ class CalculatorServiceImpl() : CalculatorService {
       "-" -> applyOperation { a, b -> a - b }
       "*" -> applyOperation { a, b -> a * b }
       "/" -> applyOperation { a, b -> a / b }
+      "SQRT" -> applyOperation{ a -> BigDecimal(sqrt(a.toDouble()).toString()) }
+      else -> throw IllegalArgumentException("Unknown operation")
     }
+  }
+
+  private fun applyOperation( operation: (BigDecimal) -> BigDecimal) {
+    val operand = getOperand()
+    val result = operation(operand)
+    stack.push(result.toDouble())
   }
 
   private fun applyOperation(operation: (BigDecimal, BigDecimal) -> BigDecimal) {
@@ -35,5 +48,5 @@ class CalculatorServiceImpl() : CalculatorService {
     stack.push(result.toDouble())
   }
 
-  private fun getOperand() = BigDecimal((stack.pop() ?: TODO("Empty Stack")).toString())
+  private fun getOperand() = BigDecimal((stack.pop() ?: throw IllegalArgumentException("No numbers left!")).toString())
 }
