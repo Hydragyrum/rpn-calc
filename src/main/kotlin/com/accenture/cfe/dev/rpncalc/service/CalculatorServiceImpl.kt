@@ -49,5 +49,5 @@ class CalculatorServiceImpl() : CalculatorService {
     stack.push(result)
   }
 
-  private fun getOperand():Double = (stack.pop() ?: throw IllegalArgumentException("No numbers left!")) as Double
+  private fun getOperand() = stack.pop()?.toDouble() ?: throw IllegalArgumentException("No numbers left!")
 }
