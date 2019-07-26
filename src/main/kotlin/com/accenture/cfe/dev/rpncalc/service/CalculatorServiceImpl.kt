@@ -3,12 +3,11 @@ package com.accenture.cfe.dev.rpncalc.service
 import com.accenture.cfe.dev.rpncalc.entity.CalculatorInput
 import com.accenture.cfe.dev.rpncalc.utils.Stack
 import com.accenture.cfe.dev.rpncalc.utils.StackImpl
-import java.math.BigDecimal
 import kotlin.math.sqrt
 
 class CalculatorServiceImpl() : CalculatorService {
 
-  private val stack: Stack<Number> = StackImpl<Number>()
+  private val stack: Stack<Number> = StackImpl()
 
   override fun calculate(inputs: List<CalculatorInput>): Number {
     stack.clear()
@@ -31,24 +30,24 @@ class CalculatorServiceImpl() : CalculatorService {
       "-" -> applyOperation { a, b -> a - b }
       "*" -> applyOperation { a, b -> a * b }
       "/" -> applyOperation { a, b -> a / b }
-      "SQRT" -> applyOperation { a -> BigDecimal(sqrt(a.toDouble()).toString()) }
+      "SQRT" -> applyOperation { a -> sqrt(a) }
       "SQ" -> applyOperation { a -> a * a }
       else -> throw IllegalArgumentException("Unknown operation")
     }
   }
 
-  private fun applyOperation(operation: (BigDecimal) -> BigDecimal) {
+  private fun applyOperation(operation: (Double) -> Double) {
     val operand = getOperand()
     val result = operation(operand)
-    stack.push(result.toDouble())
+    stack.push(result)
   }
 
-  private fun applyOperation(operation: (BigDecimal, BigDecimal) -> BigDecimal) {
+  private fun applyOperation(operation: (Double, Double) -> Double) {
     val operand2 = getOperand()
     val operand1 = getOperand()
     val result = operation(operand1, operand2)
-    stack.push(result.toDouble())
+    stack.push(result)
   }
 
-  private fun getOperand() = BigDecimal((stack.pop() ?: throw IllegalArgumentException("No numbers left!")).toString())
+  private fun getOperand():Double = (stack.pop() ?: throw IllegalArgumentException("No numbers left!")) as Double
 }
