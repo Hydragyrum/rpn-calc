@@ -6,6 +6,7 @@ import com.accenture.cfe.dev.rpncalc.service.TranslatorService
 import com.accenture.cfe.dev.rpncalc.service.TranslatorServiceImpl
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.features.CORS
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
@@ -17,6 +18,9 @@ import org.koin.ktor.ext.inject
 
 fun main(args: Array<String>) {
   val server = embeddedServer(Netty, port = 8008) {
+    install(CORS) {
+      anyHost()
+    }
     install(Koin) {
       modules(calcModules)
     }
@@ -30,6 +34,7 @@ fun main(args: Array<String>) {
           val result = service.calculateInput(calcInput).toString()
           call.respondText { result }
         } catch (e: IllegalArgumentException) {
+          println(e.stackTrace)
           call.respondText { "Err" }
         }
       }
